@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app  # The name of the application in Argo CD
+  namespace: argocd  # The namespace where Argo CD is installed
+spec:
+  project: default  # Use the default project
+  source:
+    repoURL: 'git@github.com:shazilmohd/nginx.git'  # URL of your Git repo
+    targetRevision: HEAD  # Use the latest commit on the default branch
+    path: charts/my-app  # Path to your Helm chart within the repo
+    helm:
+      valueFiles:
+        - values.yaml  # Specify any custom values if needed
+  destination:
+    server: 'https://kubernetes.default.svc'  # Kubernetes API server URL
+    namespace: default  # The Kubernetes namespace where the app should be deployed
+  syncPolicy:
+    automated:  # Enable automated syncing
+      prune: true  # Automatically delete resources that are no longer defined
+      selfHeal: true  # Automatically heal resources that drift from the desired state
+
